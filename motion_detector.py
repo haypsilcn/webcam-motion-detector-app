@@ -14,9 +14,10 @@ times = []
 data_frame = pandas.DataFrame(columns=["Start", "End"])
 
 webcam = cv2.VideoCapture(0)  # 0 to use internal webcam
+webcam.read()
+
 # to avoid IndexError that may happen in times in line 71 due to times has an odd number of elements
 # wait more than 2s delay that's been prefixed before bring moving object into camera's view
-webcam.read()
 time.sleep(1)
 
 while True:
@@ -31,7 +32,7 @@ while True:
         first_frame = gray  # get the grayscale image which represents the very first frame of the webcam
         continue  # means continue to the beginning of the loop and don't go all around the rest of the code.
         # after starting the next iteration, first_frame is not None anymore
-        # therefor after executing line 27, line 36 will be executed next
+        # therefor after executing line 28, line 37 will be executed next
 
     delta_frame = cv2.absdiff(first_frame, gray)  # the result of comparing two blurred grayscale images = new image
     thresh_frame = cv2.threshold(delta_frame, 20, 255, cv2.THRESH_BINARY)[1]
@@ -40,7 +41,7 @@ while True:
     (cnts, _) = cv2.findContours(thresh_frame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     for contour in cnts:
-        if cv2.contourArea(contour) < 1000:
+        if cv2.contourArea(contour) < 10000:
             continue
         status = 1  # object enters to frame, change status to one
 
